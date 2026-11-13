@@ -1,0 +1,79 @@
+name: DrumBridge
+options:
+  bundleIdPrefix: com.emac
+  deploymentTarget:
+    macOS: "13.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    DEVELOPMENT_TEAM: 4YRKXPJ3P5
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    ENABLE_HARDENED_RUNTIME: YES
+    SWIFT_OBJC_BRIDGING_HEADER: Shared/DrumBridge-Bridging-Header.h
+    GCC_C_LANGUAGE_STANDARD: gnu11
+targets:
+  DrumBridge:
+    type: application
+    platform: macOS
+    sources:
+      - App
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.emac.DrumBridge
+        PRODUCT_NAME: DrumBridge
+        GENERATE_INFOPLIST_FILE: NO
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: DrumBridge
+        LSApplicationCategoryType: public.app-category.music
+        NSHumanReadableCopyright: Evan McIntosh
+    entitlements:
+      path: App/DrumBridge.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+    dependencies:
+      - target: DrumBridgeAU
+        embed: true
+  DrumBridgeAU:
+    type: app-extension
+    platform: macOS
+    sources:
+      - AUExtension
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.emac.DrumBridge.AU
+        PRODUCT_NAME: DrumBridgeAU
+        GENERATE_INFOPLIST_FILE: NO
+    info:
+      path: AUExtension/Info.plist
+      properties:
+        CFBundleDisplayName: DrumBridge
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.AudioUnit-UI
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).AudioUnitViewController
+          NSExtensionAttributes:
+            AudioComponents:
+              - name: "DrumBridge: Drum Map Translator"
+                description: Drum Map Translator
+                manufacturer: DBrg
+                type: aumi
+                subtype: dbmt
+                version: 65536
+                sandboxSafe: true
+                tags:
+                  - MIDI
+    entitlements:
+      path: AUExtension/DrumBridgeAU.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+    dependencies:
+      - sdk: AudioToolbox.framework
+      - sdk: AVFoundation.framework
+      - sdk: CoreAudioKit.framework

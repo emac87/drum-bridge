@@ -1,0 +1,7 @@
+build/
+DrumBridge.xcodeproj/
+tools/build.log
+App/Info.plist
+AUExtension/Info.plist
+*.entitlements
+.DS_Store
